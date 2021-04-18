@@ -1,5 +1,4 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -23,8 +22,8 @@ export default function ButtonAppBar() {
           <Typography variant="h6" className={classes.title}>
             Welcome User
           </Typography>
-          <Button component={RouterLink} linkTo={'/login'} color="inherit">Login</Button>
-          <Button component={RouterLink} linkTo={'/register'} color="inherit">Register</Button>
+          <Button component={RouterLink} linkto={'/login'} color="inherit">Login</Button>
+          <Button component={RouterLink} linkto={'/register'} color="inherit">Register</Button>
         </Toolbar>
       </AppBar>
     </div>
