@@ -1,8 +1,7 @@
-import mongoose, { Schema } from 'mongoose';
-import timestamps from 'mongoose-timestamp';
-import { composeWithMongoose } from 'graphql-compose-mongoose';
+const mongoose = require('mongoose')
+const { Schema } = mongoose
 
-export const UserSchema = new Schema(
+const UserSchema = new Schema(
     {
         username: {
             type: String,
@@ -27,10 +26,8 @@ export const UserSchema = new Schema(
     }
 );
 
-UserSchema.plugin(timestamps);
-// UserSchema.plugin(require('mongoose-bcrypt'))
+const User = mongoose.model('User', UserSchema)
 
-UserSchema.index({ createdAt: 1, updatedAt: 1 });
-
-export const User = mongoose.model('User', UserSchema);
-export const UserTC = composeWithMongoose(User);
+module.exports = {
+    User
+}
