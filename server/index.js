@@ -6,8 +6,10 @@ const expressJwt = require('express-jwt');
 const jwt = require('jsonwebtoken');
 const http = require('http')
 const cookieParser = require('cookie-parser');
-const config = require('./config');
+const config = require('./config/config');
 const dbConnection = require('./config/database');
+const mongoose = require('mongoose')
+require('dotenv').config()
 
 const jwtSecret = Buffer.from('xkMBdsE+P6242Z2dPV3RD91BPbLIko7t', 'base64');
 
@@ -19,10 +21,10 @@ app.use(cors({
     secret: jwtSecret,
     algorithms: ['HS256']
 }),
-    app.use(express.urlencoded({
+    express.urlencoded({
         extended: true
-    })),
-    app.use(cookieParser(jwtSecret))
+    }),
+    cookieParser(jwtSecret)
 );
 
 const typeDefs = fs.readFileSync('./schema.graphql', { encoding: 'utf8' });
@@ -57,4 +59,13 @@ app.post('/login', (req, res) => {
 // app.listen(port, () => console.log(`Server started on port ${port}`));
 const httpServer = http.createServer(app);
 apolloServer.installSubscriptionHandlers(httpServer)
-httpServer.listen(config.port, () => console.log(`Server started on port ${config.port}`));
+
+mongoose
+    .connect(config.dbURL, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then((res) => {
+        httpServer.listen(config.port, () => console.log(`Server started on port ${config.port}`));
+    })
+    .catch((err) => {
+        console.log('Error while connecting to MongoDB', err);
+    })
+
