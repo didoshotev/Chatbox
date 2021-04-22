@@ -2,7 +2,7 @@ import { mainStyles } from '../chat-styles'
 import MessageItem from './message-item';
 import List from '@material-ui/core/List';
 
-const MessageList = () => {
+const MessageList = (props) => {
     const classes = mainStyles();
     
     // TODO: taka care of positioning RIGHT or LEFT

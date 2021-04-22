@@ -5,20 +5,20 @@ const ListContacts = () => {
 
     const dummyData = [
         {
-            key: "RemySharp",
+            key: "Main Conversation",
             status: "online",
-            img: "https://material-ui.com/static/images/avatar/1.jpg"
+            img: "https://material-ui.com/static/images/avatar/1.jpg",
         },
-        {
-            key: "Alice",
-            status: "offline",
-            img: "https://material-ui.com/static/images/avatar/3.jpg"
-        },
-        {
-            key: "CindyBaker",
-            status: "offline",
-            img: "https://material-ui.com/static/images/avatar/2.jpg"
-        },
+        // {
+        //     key: "Alice",
+        //     status: "offline",
+        //     img: "https://material-ui.com/static/images/avatar/3.jpg",
+        // },
+        // {
+        //     key: "CindyBaker",
+        //     status: "offline",
+        //     img: "https://material-ui.com/static/images/avatar/2.jpg",
+        // },
     ]
 
     return (

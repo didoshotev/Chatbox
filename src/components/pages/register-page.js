@@ -15,12 +15,14 @@ import { formStyles } from '../../styles/styles'
 import RouterLink from '../global/link';
 import { useHistory } from 'react-router';
 import { register } from '../../utils/auth';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import UserContext from '../../Context';
 
 export default function SignUp() {
   const classes = formStyles();
   const history = useHistory()
   const [credentials, setCredentials] = useState({ username: '', email: '', password: '', error: false })
+  const context = useContext(UserContext)
 
   const handleChange = (event) => {
     const { name, value } = event.target
@@ -35,6 +37,8 @@ export default function SignUp() {
       const user = await register(username, email, password)
       if(user) {
         console.log('New User', user);
+        context.logIn(user)
+        console.log(context);
         history.push('/')
         // TODO setContext, user is logged in
       } else {
@@ -52,7 +56,6 @@ export default function SignUp() {
   const handleSubmit = (event) => {
     event.preventDefault();
     registerUser()
-    // createUser()
   }
 
   return (
