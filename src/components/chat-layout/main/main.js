@@ -7,6 +7,7 @@ import { mainStyles } from '../chat-styles'
 import ListContacts from '../list/list-contacts'
 import MessageInput from '../message/message-input'
 import MessageList from '../message/message-list';
+import MessageWrapper from '../message/message-wrapper';
 
 const MainChat = () => {
   const classes = mainStyles();
@@ -25,9 +26,7 @@ const MainChat = () => {
                 <ListContacts />
             </Grid>
             <Grid item xs={9}>
-                <MessageList />
-                <Divider />
-                <MessageInput />
+                <MessageWrapper />
             </Grid>
         </Grid>
       </div>

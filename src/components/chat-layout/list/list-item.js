@@ -5,12 +5,14 @@ import Avatar from '@material-ui/core/Avatar';
 
 const ListContact = (props) => {
 
+
     const handleClick = (e) => {
-        console.log(props);
+        
     }
 
+
     return (
-        <ListItem button key={props.name} onClick={handleClick}>
+        <ListItem button key={props.name} onClick={handleClick} selected>
             <ListItemIcon>
                 <Avatar alt={props.name} src={props.img} />
             </ListItemIcon>

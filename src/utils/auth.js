@@ -61,7 +61,3 @@ export async function login(username, password) {
         }
     }
 }
-
-// function getUserFromToken(token) {
-//   return jwtDecode(token).sub;
-// }

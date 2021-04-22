@@ -13,15 +13,17 @@ import Container from '@material-ui/core/Container';
 import Copyright from '../global/copyright';
 import { formStyles } from '../../styles/styles'
 import RouterLink from '../global/link';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { login } from '../../utils/auth';
 import { useHistory } from 'react-router';
+import UserContext from '../../Context';
 
 export default function SignIn() {
   const classes = formStyles();
   const [credentials, setCredentials] = useState({username: '', password: '', error: false})
   const history = useHistory()
- 
+  const context = useContext(UserContext)
+
   const handleChange = (event) => {
     const {name, value} = event.target;
     setCredentials({
@@ -36,7 +38,7 @@ export default function SignIn() {
     const user = await login(username, password)
     if(user) {
       history.push('/')
-      // TODO setContext, user is logged in
+      context.logIn(user)
     } else {
       setCredentials({
         ...credentials,
