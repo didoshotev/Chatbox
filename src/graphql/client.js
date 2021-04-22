@@ -4,22 +4,32 @@ import {
   import { WebSocketLink } from 'apollo-link-ws'
   import { getMainDefinition } from 'apollo-utilities'
 //   import { getAccessToken } from '../auth';
-  
+// import { } from '../utils/auth'  
+import getCookie from '../utils/cookie';
+import { setContext } from '@apollo/client/link/context'
+
   const httpUrl = 'http://localhost:9000/graphql';
   const wsUrl = 'ws://localhost:9000/graphql';
   
   
   const httpLink = ApolloLink.from([
     new ApolloLink((operation, forward) => {
-    //   const token = getAccessToken();
-    //   if (token) {
-    //     operation.setContext({headers: {'authorization': `Bearer ${token}`}});
-    //   }
+      const token = getCookie('Authorization')
+      const data = operation.getContext();
+      console.log('HTTPLINK');
+      console.log(data);
+      if (token) {
+        operation.setContext({headers: {'authorization': `${token}`}});
+      }
       return forward(operation);
     }),
-    new HttpLink({uri: httpUrl})
-  ]);
-  
+    new HttpLink({uri: httpUrl, credentials: 'same-origin'})
+  ],
+  // new ApolloLink((operation, forward) => {
+  //   console.log('SECOND PHASE');
+  // })
+  );
+
   const wsLink = new WebSocketLink({
     uri: wsUrl,
     options: {
@@ -31,18 +41,31 @@ import {
     }
   })
   
+  const authLink = setContext((_, data, ) => {
+    const token = getCookie('x-auth-token')
+    console.log('IN AUTHLINK');
+    console.log(data);
+    return
+    // return {
+    //   headers: {
+    //     ...headers,
+    //     authorization: token ? `Bearer ${token}` : "",
+    //   }
+    // }
+  })
+
   const isSubsciption = (operation) => {
     // console.log('isSubscription: ', operation);
     const definition = getMainDefinition(operation.query)
-    // console.log(definition);
     return definition.kind === 'OperationDefinition'
     && definition.operation === 'subscription'
   }
   
   const client = new ApolloClient({
     cache: new InMemoryCache(),
-    link: split(isSubsciption, wsLink, httpLink),
-    defaultOptions: {query: {fetchPolicy: 'no-cache'}}
+    link: split(isSubsciption, wsLink, authLink.concat(httpLink)),
+    // defaultOptions: {query: {fetchPolicy: 'no-cache'}},
+    credentials: 'include'
   });
   
   export default client;

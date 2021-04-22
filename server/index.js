@@ -7,15 +7,21 @@ const jwt = require('jsonwebtoken');
 const http = require('http')
 const cookieParser = require('cookie-parser');
 const config = require('./config/config');
-const dbConnection = require('./config/database');
+const { connectDB } = require('./config/database');
 const mongoose = require('mongoose')
 require('dotenv').config()
+const { User } = require('./models/user')
+const utils = require('./utils')
+// import { graphqlExpress } from 'apollo-server-express'
 
 const jwtSecret = Buffer.from('xkMBdsE+P6242Z2dPV3RD91BPbLIko7t', 'base64');
 
 const app = express()
 app.use(cors({
     exposedHeaders: 'Authorization',
+    credentials: true,
+    origin: 'http://localhost:3000',
+    allowedHeaders: ['Content-Type', 'Authorization']
 }), express.json(), expressJwt({
     credentialsRequired: false,
     secret: jwtSecret,
@@ -24,39 +30,73 @@ app.use(cors({
     express.urlencoded({
         extended: true
     }),
-    cookieParser(jwtSecret)
+    cookieParser(jwtSecret),
 );
 
 const typeDefs = fs.readFileSync('./schema.graphql', { encoding: 'utf8' });
 const resolvers = require('./resolvers');
 
 
-function context({ req, connection }) {
-    if (req && req.user) {
-        return { userId: req.user.sub };
-    }
-    if (connection && connection.context && connection.context.accessToken) {
-        const decodedToken = jwt.verify(connection.context.accessToken, jwtSecret)
-        return { userId: decodedToken.sub }
-    }
-    return {};
+function context(data) { //{ req, connection, res }
+    return data.res
+    // if(req.body.operationName === 'addUser') {
+    //      console.log(req.body.variables);
+    //     const token = utils.jwt.createToken({ id: user._id })
+    //     res.header('Authorization', token)
+    //     console.log(res.header);
+    //     return token
+    // }
+    
+    // if (req && req.user) {
+    //     return { userId: req.user.id };
+    // }
+    // if (connection && connection.context && connection.context.accessToken) {
+    //     const decodedToken = jwt.verify(connection.context.accessToken, jwtSecret)
+    //     return { userId: decodedToken.id }
+    // }
+    // return {};
 }
 
 const apolloServer = new ApolloServer({ typeDefs, resolvers, context });
-apolloServer.applyMiddleware({ app, path: '/graphql' });
+apolloServer.applyMiddleware({ app, path: '/graphql', cors: false, credentials: true, exposedHeaders: 'Authorization',});
 
-app.post('/login', (req, res) => {
-    const { name, password } = req.body;
-    const user = db.users.get(name);
-    if (!(user && user.password === password)) {
-        res.sendStatus(401);
-        return;
+
+app.post('/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const user = await User.findOne({ username })
+        if (!username || password !== user.password) {
+            res.sendStatus(401);
+            return;
+        }
+        const token = utils.jwt.createToken({ id: user._id })
+        res.header('Authorization', token).send(user)
+        // const token = jwt.sign({ sub: username.id }, jwtSecret);
+    } catch (err) {
+        console.log('ERROR IN LOGIN');
+        res.sendStatus(500).send(err)
     }
-    const token = jwt.sign({ sub: user.id }, jwtSecret);
-    res.send({ token });
 });
 
-// app.listen(port, () => console.log(`Server started on port ${port}`));
+
+app.post('/register', async (req, res) => {
+    try {
+        const { username, password, email } = req.body;
+        const user = await User.create({ username, password, email })
+        if (!username || password !== user.password || !email) {
+            res.sendStatus(401).send('error in MDB create user');
+            return;
+        }
+        console.log('user in backend', user);
+        const token = utils.jwt.createToken({ id: user._id })
+        res.header('Authorization', token).send(user)
+        // const token = jwt.sign({ sub: username.id }, jwtSecret);
+    } catch (err) {
+        console.log('ERROR IN LOGIN');
+        res.sendStatus(500).send(err)
+    }
+});
+
 const httpServer = http.createServer(app);
 apolloServer.installSubscriptionHandlers(httpServer)
 
@@ -68,4 +108,3 @@ mongoose
     .catch((err) => {
         console.log('Error while connecting to MongoDB', err);
     })
-

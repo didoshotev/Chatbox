@@ -2,6 +2,7 @@ const { PubSub } = require('graphql-subscriptions')
 // const { User, Message } = require('./models')
 const { User } = require('./models/user')
 const { Message } = require('./models/message')
+const { jwt } = require('./utils')
 
 const MESSAGE_ADDED = 'MESSAGE_ADDED'
 const pubSub = new PubSub()
@@ -34,7 +35,7 @@ const Query = {
       console.log('ERROR IN FETCHING USER');
       return err
     }
-  }
+  },
 }
 
 const Mutation = {
@@ -57,18 +58,6 @@ const Mutation = {
       return err
     }
   },
-  addUser: async (_root, args, data2) => {
-    try {
-      const { username, email, password } = args
-      const userObj = await User.create({ username, email, password })
-      if (userObj) {
-        return userObj.data.addUser
-      }
-    } catch (err) {
-      console.log('ERROR IN CREATING USER');
-      return err
-    }
-  }
 }
 
 const Subscription = {
