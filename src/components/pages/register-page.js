@@ -13,9 +13,47 @@ import Container from '@material-ui/core/Container';
 import Copyright from '../global/copyright'
 import { formStyles } from '../../styles/styles'
 import RouterLink from '../global/link';
+import { useHistory } from 'react-router';
+import { register } from '../../utils/auth';
+import { useState } from 'react';
 
 export default function SignUp() {
   const classes = formStyles();
+  const history = useHistory()
+  const [credentials, setCredentials] = useState({ username: '', email: '', password: '', error: false })
+
+  const handleChange = (event) => {
+    const { name, value } = event.target
+    setCredentials({
+      ...credentials,
+      [name]: value
+    })
+  }
+  const registerUser = async() => {
+    try {
+      const { username, email, password } = credentials
+      const user = await register(username, email, password)
+      if(user) {
+        console.log('New User', user);
+        history.push('/')
+        // TODO setContext, user is logged in
+      } else {
+        setCredentials({
+          ...credentials,
+          error: true
+        })
+      }
+    } catch(err) {
+      console.log('CLIENT ERROR IN CREATING USER');
+      console.log(err);
+    }
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    registerUser()
+    // createUser()
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -29,27 +67,17 @@ export default function SignUp() {
         </Typography>
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
                 autoComplete="fname"
-                name="firstName"
+                name="username"
                 variant="outlined"
                 required
                 fullWidth
-                id="firstName"
+                id="username"
                 label="First Name"
                 autoFocus
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                autoComplete="lname"
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -61,6 +89,7 @@ export default function SignUp() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -74,6 +103,7 @@ export default function SignUp() {
                 id="password"
                 autoComplete="current-password"
                 helperText={'Password must be atleast 6 symbols long'}
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -89,6 +119,7 @@ export default function SignUp() {
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={handleSubmit}
           >
             Sign Up
           </Button>

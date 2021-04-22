@@ -2,14 +2,10 @@ type Query {
     messages: [Message]
     user(id: String): User
     # message: (id: String): Message
-    # users: [User]
-    # user: (id: String): User
-    # UserContacts: [User]
 }
 
 type Mutation {
     addMessage(input: MessageInput!, userFrom: ID!, userTo: ID!): Message,
-    addUser(username: String, email: String, password: String): User,
     addUserContact(username: String, email: String): User,
 }
 
@@ -37,8 +33,8 @@ type Subscription {
   messageAdded: Message
 }
 
-# input UserInput {
-#     username: String
-#     email: String
-#     password: String
-# }
+input UserInput {
+    username: String
+    email: String
+    password: String
+}
