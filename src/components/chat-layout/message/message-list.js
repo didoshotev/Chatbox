@@ -1,10 +1,14 @@
 import { mainStyles } from '../chat-styles'
 import MessageItem from './message-item';
 import List from '@material-ui/core/List';
+import { useContext } from 'react';
+import UserContext from '../../../Context';
+
 
 const MessageList = (props) => {
     const classes = mainStyles();
-    
+    const context = useContext(UserContext)
+    const user = context.user
     // TODO: taka care of positioning RIGHT or LEFT
     const dummyData = [
         {

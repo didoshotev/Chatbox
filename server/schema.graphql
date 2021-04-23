@@ -5,16 +5,16 @@ type Query {
 }
 
 type Mutation {
-    addMessage(input: MessageInput!, userFrom: ID!, userTo: ID!): Message,
+    addMessage(input: MessageInput!, userFrom: String!, userTo: String): Message,
     addUserContact(username: String, email: String): User,
 }
 
 
 type Message {
     id: ID!
-    from: String
-    to: String
+    userFrom: String
     text: String
+    time: Date
 }
 
 type User {
@@ -38,3 +38,5 @@ input UserInput {
     email: String
     password: String
 }
+
+scalar Date

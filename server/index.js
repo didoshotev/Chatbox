@@ -3,16 +3,13 @@ const { ApolloServer } = require('apollo-server-express');
 const cors = require('cors');
 const express = require('express');
 const expressJwt = require('express-jwt');
-const jwt = require('jsonwebtoken');
 const http = require('http')
 const cookieParser = require('cookie-parser');
 const config = require('./config/config');
-const { connectDB } = require('./config/database');
 const mongoose = require('mongoose')
 require('dotenv').config()
-const { User } = require('./models/user')
-const utils = require('./utils')
 // import { graphqlExpress } from 'apollo-server-express'
+const userRoutes = require('./routes/user')
 
 const jwtSecret = Buffer.from('xkMBdsE+P6242Z2dPV3RD91BPbLIko7t', 'base64');
 
@@ -60,42 +57,7 @@ function context(data) { //{ req, connection, res }
 const apolloServer = new ApolloServer({ typeDefs, resolvers, context });
 apolloServer.applyMiddleware({ app, path: '/graphql', cors: false, credentials: true, exposedHeaders: 'Authorization',});
 
-
-app.post('/login', async (req, res) => {
-    try {
-        const { username, password } = req.body;
-        const user = await User.findOne({ username })
-        if (!username || password !== user.password) {
-            res.sendStatus(401);
-            return;
-        }
-        const token = utils.jwt.createToken({ id: user._id })
-        res.header('Authorization', token).send(user)
-        // const token = jwt.sign({ sub: username.id }, jwtSecret);
-    } catch (err) {
-        console.log('ERROR IN LOGIN');
-        res.sendStatus(500).send(err)
-    }
-});
-
-
-app.post('/register', async (req, res) => {
-    try {
-        const { username, password, email } = req.body;
-        const user = await User.create({ username, password, email })
-        if (!username || password !== user.password || !email) {
-            res.sendStatus(401).send('error in MDB create user');
-            return;
-        }
-        console.log('user in backend', user);
-        const token = utils.jwt.createToken({ id: user._id })
-        res.header('Authorization', token).send(user)
-        // const token = jwt.sign({ sub: username.id }, jwtSecret);
-    } catch (err) {
-        console.log('ERROR IN LOGIN');
-        res.sendStatus(500).send(err)
-    }
-});
+userRoutes(app)
 
 const httpServer = http.createServer(app);
 apolloServer.installSubscriptionHandlers(httpServer)
