@@ -36,9 +36,7 @@ export default function SignUp() {
       const { username, email, password } = credentials
       const user = await register(username, email, password)
       if(user) {
-        console.log('New User', user);
         context.logIn(user)
-        console.log(context);
         history.push('/')
         // TODO setContext, user is logged in
       } else {

@@ -5,15 +5,15 @@ const Model = mongoose.model
 const MessageSchema = new Schema(
     {
         userFrom: {
-            type: Schema.Types.ObjectId,
+            type: String,
             ref: 'User',
             required: true,
         },
-        userTo: {
-            type: Schema.Types.ObjectId,
-            ref: 'User',
-            required: true,
-        },
+        // userTo: {
+        //     type: Schema.Types.ObjectId,
+        //     ref: 'User',
+        //     required: true,
+        // },
         text: {
             type: String,
             required: true,

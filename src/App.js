@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import UserContext from "./Context";
 import getCookie from "./utils/cookie";
-
+import { isVerified } from './utils/auth'
 
 function App(props) {
 
@@ -17,28 +17,33 @@ function App(props) {
 
   const logOut = () => {
     document.cookie = 'x-auth-token= ; expires= Thu, 01 Jan 1970 00:00:00 GMT'
-    this.setState({
+    setUserObject({
       ...userObject,
       loggedIn: false,
       user: null,
     })
   }
 
-  //TODO: verifyUser on refresh
+  const verifyUser = async(token) => {
+    const response = await isVerified(token)
+    if(response.status === true) {
+      logIn({
+        username: response.user.username,
+        id: response.user._id,
+        email: response.user.email
+      })
+    }
+  }
 
   useEffect(() => {
     const token = getCookie('x-auth-token')
-    if (!token) {
+    if(!token) {
       logOut()
       return
     }
-  }, [])
+    verifyUser(token)
 
-  // if(userObject.loggedIn === null) {
-  //   return (
-  //     <h3>Loading...</h3>
-  //   )
-  // }
+  }, [])
 
   return (
     <>

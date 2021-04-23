@@ -15,20 +15,16 @@ function requireAuth(userId) {
 }
 
 const Query = {
-  messages: (_root, args, context, info) => {
-    // console.log(Message);
+  messages: async(_root, args, context, info) => {
     //   requireAuth(userId);
-    // return Message.findOne().then(res => {
-    //   console.log('RES:', res);
-    // })
-    //   return db.messages.list();
+      const messages = await Message.find()
+      return messages
   },
   user: async(_root, args, context, info) => {
     try {
       const { id } = args
       const userObj = await User.findById(id)
       if(userObj) {
-        console.log(userObj);
         return userObj
       }
     } catch (err) {
@@ -40,7 +36,7 @@ const Query = {
 
 const Mutation = {
   addMessage: async(_root, args, context) => {
-    const userId = '607e8a4f4903722518ce772e'
+    const userFrom = 'deffect'
     const receiverId = '607e8b25a097b33ef8985540'
     //   requireAuth(userId);
     // const messageId = db.messages.create({ from: userId, text: input.text });
@@ -48,9 +44,8 @@ const Mutation = {
     // pubSub.publish(MESSAGE_ADDED, { messageAdded: message })
     try {
       const text = args.input.text;
-      const msgObj = await Message.create({userFrom: userId, userTo: receiverId, text})
+      const msgObj = await Message.create({userFrom, text})
       if(msgObj) {
-        console.log(msgObj);
         return msgObj
       }
     } catch(err) {

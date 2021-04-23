@@ -16,8 +16,6 @@ import { setContext } from '@apollo/client/link/context'
     new ApolloLink((operation, forward) => {
       const token = getCookie('Authorization')
       const data = operation.getContext();
-      console.log('HTTPLINK');
-      console.log(data);
       if (token) {
         operation.setContext({headers: {'authorization': `${token}`}});
       }
@@ -43,8 +41,6 @@ import { setContext } from '@apollo/client/link/context'
   
   const authLink = setContext((_, data, ) => {
     const token = getCookie('x-auth-token')
-    console.log('IN AUTHLINK');
-    console.log(data);
     return
     // return {
     //   headers: {
