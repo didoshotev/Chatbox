@@ -18,6 +18,10 @@ const MessageSchema = new Schema(
             type: String,
             required: true,
         },
+        minHours: {
+            type: String,
+            required: true
+        },
         time: {
             type: Date,
             default: Date.now

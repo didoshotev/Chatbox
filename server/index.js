@@ -35,7 +35,6 @@ const resolvers = require('./resolvers');
 
 
 function context(data) { //{ req, connection, res }
-    return data.res
     // if(req.body.operationName === 'addUser') {
     //      console.log(req.body.variables);
     //     const token = utils.jwt.createToken({ id: user._id })
@@ -44,14 +43,15 @@ function context(data) { //{ req, connection, res }
     //     return token
     // }
     
-    // if (req && req.user) {
-    //     return { userId: req.user.id };
-    // }
+    if (data.req && data.req.user) {
+        return { userId: data.req.user.id, username: data.req.user.username };
+    }
     // if (connection && connection.context && connection.context.accessToken) {
     //     const decodedToken = jwt.verify(connection.context.accessToken, jwtSecret)
     //     return { userId: decodedToken.id }
     // }
     // return {};
+    return {}
 }
 
 const apolloServer = new ApolloServer({ typeDefs, resolvers, context });

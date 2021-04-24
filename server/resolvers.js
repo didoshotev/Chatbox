@@ -15,8 +15,8 @@ function requireAuth(userId) {
 }
 
 const Query = {
-  messages: async(_root, args, context, info) => {
-    //   requireAuth(userId);
+  messages: async(_root, args, { userId }) => {
+      requireAuth(userId);
       const messages = await Message.find()
       return messages
   },
@@ -35,7 +35,8 @@ const Query = {
 }
 
 const Mutation = {
-  addMessage: async(_root, args, context) => {
+  addMessage: async(_root, args, { input }, { username }) => {
+    console.log(9999);
     const userFrom = 'deffect'
     const receiverId = '607e8b25a097b33ef8985540'
     //   requireAuth(userId);
@@ -44,8 +45,11 @@ const Mutation = {
     // pubSub.publish(MESSAGE_ADDED, { messageAdded: message })
     try {
       const text = args.input.text;
-      const msgObj = await Message.create({userFrom, text})
+      const time = new Date()
+      const timeResult = `${time.getHours()}:${time.getMinutes()}`
+      const msgObj = await Message.create({userFrom, text, minHours: timeResult})
       if(msgObj) {
+        console.log('mutation');
         return msgObj
       }
     } catch(err) {

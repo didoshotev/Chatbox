@@ -5,7 +5,7 @@ type Query {
 }
 
 type Mutation {
-    addMessage(input: MessageInput!, userFrom: String!, userTo: String): Message,
+    addMessage(input: MessageInput!): Message,
     addUserContact(username: String, email: String): User,
 }
 
@@ -15,6 +15,7 @@ type Message {
     userFrom: String
     text: String
     time: Date
+    minHours: String
 }
 
 type User {

@@ -14,10 +14,10 @@ import { setContext } from '@apollo/client/link/context'
   
   const httpLink = ApolloLink.from([
     new ApolloLink((operation, forward) => {
-      const token = getCookie('Authorization')
-      const data = operation.getContext();
+      const token = getCookie('x-auth-token')
+      // const data = operation.getContext();
       if (token) {
-        operation.setContext({headers: {'authorization': `${token}`}});
+        operation.setContext({headers: {'authorization': `Bearer ${token}`}});
       }
       return forward(operation);
     }),
