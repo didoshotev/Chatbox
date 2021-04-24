@@ -2,19 +2,19 @@ import MessageInput from './message-input'
 import MessageList from './message-list';
 import Divider from '@material-ui/core/Divider';
 import useChatMessages from '../../../hooks/useChatMessages';
-import { useQuery } from '@apollo/client';
-import { LOAD_MESSAGES } from '../../../graphql/queries';
 
 const MessageWrapper = () => {
+    const { messages, addMessage } = useChatMessages()
+
     const handleSend = async (text) => {
+        const { data } = await addMessage(text)
     }
-    const { messages } = useChatMessages()
 
     return (
         <>
-            <MessageList messages={messages} />
+            <MessageList messages={messages}/>
             <Divider />
-            <MessageInput onSend={handleSend} />
+            <MessageInput onSend={handleSend}/> 
         </>
     )
 

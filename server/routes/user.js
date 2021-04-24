@@ -11,7 +11,8 @@ module.exports = (app) => {
                 res.sendStatus(401);
                 return;
             }
-            const token = utils.jwt.createToken({ id: user._id })
+            console.log(user);
+            const token = utils.jwt.createToken({ id: user._id, username: user.username })
             res.header('Authorization', token).send(user)
             // const token = jwt.sign({ sub: username.id }, jwtSecret);
         } catch (err) {
@@ -31,7 +32,7 @@ module.exports = (app) => {
                 return;
             }
             console.log('user in backend', user);
-            const token = utils.jwt.createToken({ id: user._id })
+            const token = utils.jwt.createToken({ id: user._id, username: user.username })
             res.header('Authorization', token).send(user)
             // const token = jwt.sign({ sub: username.id }, jwtSecret);
         } catch (err) {

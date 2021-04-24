@@ -13,7 +13,6 @@ import UserContext from '../../Context';
 export default function ButtonAppBar() {
   const classes = headerStyles();
   const context = useContext(UserContext)
-  console.log(context);
 
   return (
     <div className={classes.root}>

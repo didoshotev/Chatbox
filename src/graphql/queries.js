@@ -27,7 +27,13 @@ query messages{
     id
     text
     userFrom
-    time
+    minHours
   }
 }
 `
+
+export async function getMessages() {
+  const info = await client.query({query: LOAD_MESSAGES})
+  console.log('info', info)
+  return info.data.messages
+}

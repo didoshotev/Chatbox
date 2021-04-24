@@ -1,11 +1,13 @@
 import Grid from '@material-ui/core/Grid';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import { useEffect, useRef } from 'react';
 import { mainStyles } from '../chat-styles'
 
 
 const MessageItem = (props) => {
     const classes = mainStyles()
+
     return (
         <ListItem key="1">
             <Grid container>
