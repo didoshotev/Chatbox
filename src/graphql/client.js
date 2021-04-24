@@ -3,10 +3,7 @@ import {
   } from 'apollo-boost';
   import { WebSocketLink } from 'apollo-link-ws'
   import { getMainDefinition } from 'apollo-utilities'
-//   import { getAccessToken } from '../auth';
-// import { } from '../utils/auth'  
 import getCookie from '../utils/cookie';
-import { setContext } from '@apollo/client/link/context'
 
   const httpUrl = 'http://localhost:9000/graphql';
   const wsUrl = 'ws://localhost:9000/graphql';
@@ -23,9 +20,6 @@ import { setContext } from '@apollo/client/link/context'
     }),
     new HttpLink({uri: httpUrl, credentials: 'same-origin'})
   ],
-  // new ApolloLink((operation, forward) => {
-  //   console.log('SECOND PHASE');
-  // })
   );
 
   const wsLink = new WebSocketLink({
@@ -33,22 +27,12 @@ import { setContext } from '@apollo/client/link/context'
     options: {
     //   lazy: true,
       reconnect: true,
-    //   connectionParams: () => ({
-    //     accessToken: getAccessToken()
-    //   })
+      connectionParams: () => ({
+        accessToken: getCookie('x-auth-token')
+      })
     }
   })
   
-  const authLink = setContext((_, data, ) => {
-    const token = getCookie('x-auth-token')
-    return
-    // return {
-    //   headers: {
-    //     ...headers,
-    //     authorization: token ? `Bearer ${token}` : "",
-    //   }
-    // }
-  })
 
   const isSubsciption = (operation) => {
     // console.log('isSubscription: ', operation);
@@ -59,8 +43,8 @@ import { setContext } from '@apollo/client/link/context'
   
   const client = new ApolloClient({
     cache: new InMemoryCache(),
-    link: split(isSubsciption, wsLink, authLink.concat(httpLink)),
-    // defaultOptions: {query: {fetchPolicy: 'no-cache'}},
+    link: split(isSubsciption, wsLink, httpLink),
+    defaultOptions: {query: {fetchPolicy: 'no-cache'}},
     credentials: 'include'
   });
   
