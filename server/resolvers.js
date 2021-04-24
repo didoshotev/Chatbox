@@ -38,18 +38,15 @@ const Mutation = {
   addMessage: async(_root, args, { input }, { username }) => {
     console.log(9999);
     const userFrom = 'deffect'
-    const receiverId = '607e8b25a097b33ef8985540'
     //   requireAuth(userId);
-    // const messageId = db.messages.create({ from: userId, text: input.text });
-    // const message = db.messages.get(messageId)
-    // pubSub.publish(MESSAGE_ADDED, { messageAdded: message })
+    
     try {
       const text = args.input.text;
       const time = new Date()
       const timeResult = `${time.getHours()}:${time.getMinutes()}`
       const msgObj = await Message.create({userFrom, text, minHours: timeResult})
       if(msgObj) {
-        console.log('mutation');
+        pubSub.publish(MESSAGE_ADDED, { messageAdded: msgObj})
         return msgObj
       }
     } catch(err) {

@@ -35,14 +35,6 @@ const resolvers = require('./resolvers');
 
 
 function context(data) { //{ req, connection, res }
-    // if(req.body.operationName === 'addUser') {
-    //      console.log(req.body.variables);
-    //     const token = utils.jwt.createToken({ id: user._id })
-    //     res.header('Authorization', token)
-    //     console.log(res.header);
-    //     return token
-    // }
-    
     if (data.req && data.req.user) {
         return { userId: data.req.user.id, username: data.req.user.username };
     }
