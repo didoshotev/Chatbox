@@ -1,7 +1,6 @@
 type Query {
     messages: [Message]
     user(id: String): User
-    # message: (id: String): Message
 }
 
 type Mutation {
