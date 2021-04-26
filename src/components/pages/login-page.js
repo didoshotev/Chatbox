@@ -20,12 +20,12 @@ import UserContext from '../../Context';
 
 export default function SignIn() {
   const classes = formStyles();
-  const [credentials, setCredentials] = useState({username: '', password: '', error: false})
+  const [credentials, setCredentials] = useState({ username: '', password: '', error: false })
   const history = useHistory()
   const context = useContext(UserContext)
 
   const handleChange = (event) => {
-    const {name, value} = event.target;
+    const { name, value } = event.target;
     setCredentials({
       ...credentials,
       [name]: value
@@ -34,16 +34,22 @@ export default function SignIn() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const {username, password} = credentials;
-    const user = await login(username, password)
-    if(user) {
-      history.push('/')
-      context.logIn(user)
-    } else {
-      setCredentials({
-        ...credentials,
-        error: true
-      })
+    console.log('handle Login');
+    try {
+      const { username, password } = credentials;
+      const user = await login(username, password)
+      if (user) {
+        context.logIn(user)
+        history.push('/')
+      } else {
+        setCredentials({
+          ...credentials,
+          error: true
+        })
+      }
+    } catch (err) {
+      console.log('Error while loging in');
+      console.log(err);
     }
   }
 
@@ -111,7 +117,7 @@ export default function SignIn() {
         </form>
       </div>
       <Box mt={8}>
-         <Copyright />
+        <Copyright />
       </Box>
     </Container>
   );

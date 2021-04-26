@@ -1,63 +1,76 @@
-import { useEffect, useState } from "react";
+import { Component, useEffect, useState } from "react";
 import UserContext from "./Context";
 import getCookie from "./utils/cookie";
 import { isVerified } from './utils/auth'
 
-function App(props) {
+class App extends Component {
 
-  const [userObject, setUserObject] = useState({ loggedIn: null, user: null })
+  constructor(props) {
+    super(props)
+    this.state = {
+      loggedIn: null,
+      user: null
+    }
+  }
 
-  const logIn = (user) => {
-    setUserObject({
-      ...userObject,
+  logIn = (user) => {
+    this.setState({
       loggedIn: true,
       user
     })
   }
 
-  const logOut = () => {
+  logOut = () => {
     document.cookie = 'x-auth-token= ; expires= Thu, 01 Jan 1970 00:00:00 GMT'
-    setUserObject({
-      ...userObject,
+    this.setState({
       loggedIn: false,
       user: null,
     })
   }
 
-  const verifyUser = async(token) => {
+  verifyUser = async (token) => {
     const response = await isVerified(token)
-    if(response.status === true) {
-      logIn({
+    if (response.status === true) {
+      this.logIn({
         username: response.user.username,
         id: response.user._id,
         email: response.user.email
       })
+    } else {
+      this.logOut()
     }
   }
 
-  useEffect(() => {
+  componentDidMount() {
     const token = getCookie('x-auth-token')
-    if(!token) {
-      logOut()
+    if (!token) {
+      this.logOut()
       return
     }
-    verifyUser(token)
+    this.verifyUser(token)
+  }
 
-  }, [])
+  render() {
+    const { loggedIn, user } = this.state
 
-  return (
-    <>
+    if (loggedIn === null) {
+      return (
+        <div>Loading...</div>
+      )
+    }
+
+    return (
       <UserContext.Provider value={{
-        logIn: logIn,
-        logOut: logOut,
-        user: userObject.user
+        user,
+        loggedIn,
+        logIn: this.logIn,
+        logOut: this.logOut,
       }}>
-        {props.children}
+        {this.props.children}
       </UserContext.Provider>
-    </>
+    );
+  }
 
-
-  );
 }
 
 export default App;

@@ -30,6 +30,13 @@ const headerStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
+  box: {
+    marginLeft: theme.spacing()
+  },
+  // boxRight: {
+  //   justifyContent: 'flex-end'
+  // }
+  
 }));
 
   export  { formStyles, headerStyles }

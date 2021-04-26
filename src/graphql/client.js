@@ -35,7 +35,6 @@ import getCookie from '../utils/cookie';
   
 
   const isSubsciption = (operation) => {
-    // console.log('isSubscription: ', operation);
     const definition = getMainDefinition(operation.query)
     return definition.kind === 'OperationDefinition'
     && definition.operation === 'subscription'

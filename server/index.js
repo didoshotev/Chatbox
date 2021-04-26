@@ -8,8 +8,8 @@ const cookieParser = require('cookie-parser');
 const config = require('./config/config');
 const mongoose = require('mongoose')
 require('dotenv').config()
-// import { graphqlExpress } from 'apollo-server-express'
 const userRoutes = require('./routes/user')
+const { jwt } = require('./utils')
 
 const jwtSecret = Buffer.from('xkMBdsE+P6242Z2dPV3RD91BPbLIko7t', 'base64');
 
@@ -34,15 +34,14 @@ const typeDefs = fs.readFileSync('./schema.graphql', { encoding: 'utf8' });
 const resolvers = require('./resolvers');
 
 
-function context(data) { //{ req, connection, res }
+async function context(data) {
     if (data.req && data.req.user) {
         return { userId: data.req.user.id, username: data.req.user.username };
     }
-    // if (connection && connection.context && connection.context.accessToken) {
-    //     const decodedToken = jwt.verify(connection.context.accessToken, jwtSecret)
-    //     return { userId: decodedToken.id }
-    // }
-    // return {};
+    if (data.connection && data.connection.context && data.connection.context.accessToken) {
+        const decodedToken = await jwt.verifyToken(data.connection.context.accessToken)
+        return { userId: decodedToken.id, username: decodedToken.username }
+    }
     return {}
 }
 

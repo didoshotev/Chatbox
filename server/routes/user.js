@@ -11,7 +11,6 @@ module.exports = (app) => {
                 res.sendStatus(401);
                 return;
             }
-            console.log(user);
             const token = utils.jwt.createToken({ id: user._id, username: user.username })
             res.header('Authorization', token).send(user)
             // const token = jwt.sign({ sub: username.id }, jwtSecret);
@@ -41,7 +40,7 @@ module.exports = (app) => {
         }
     });
 
-    app.post('/verify', async(req, res, next) => {
+    app.post('/verify', async(req, res) => {
         // const token = req.cookies[config.authCookieName] || '';
         try {
             const token = req.body.token || ''
