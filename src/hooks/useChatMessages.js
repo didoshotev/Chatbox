@@ -6,7 +6,7 @@ import { messageAddedSubscription } from "../graphql/subscriptions"
 const useChatMessages = () => {
     const { data } = useQuery(LOAD_MESSAGES)
     const messages = data ? data.messages : []
-    
+
     useSubscription(messageAddedSubscription, {
         onSubscriptionData: ({ client, subscriptionData }) => {
             if(messages.length > 0) {

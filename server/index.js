@@ -35,18 +35,24 @@ const resolvers = require('./resolvers');
 
 
 async function context(data) {
+    // console.log(data.req.user);
     if (data.req && data.req.user) {
         return { userId: data.req.user.id, username: data.req.user.username };
     }
-    if (data.connection && data.connection.context && data.connection.context.accessToken) {
-        const decodedToken = await jwt.verifyToken(data.connection.context.accessToken)
+    // if (data.connection && data.connection.context && data.connection.context.accessToken) {
+    //     const decodedToken = await jwt.verifyToken(data.connection.context.accessToken)
+    //     return { userId: decodedToken.id, username: decodedToken.username }
+    // }
+    if (data.payload && data.payload.auth && data.payload.auth.accessToken) {
+        const decodedToken = await jwt.verifyToken(data.payload.auth.accessToken)
         return { userId: decodedToken.id, username: decodedToken.username }
     }
+     
     return {}
 }
 
-const apolloServer = new ApolloServer({ typeDefs, resolvers, context });
-apolloServer.applyMiddleware({ app, path: '/graphql', cors: false, credentials: true, exposedHeaders: 'Authorization',});
+const apolloServer = new ApolloServer({ typeDefs, resolvers, context, subscriptions: { keepAlive: 30000 } });
+apolloServer.applyMiddleware({ app, path: '/graphql', cors: false, credentials: true});
 
 userRoutes(app)
 

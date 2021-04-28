@@ -5,8 +5,6 @@ import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
 import { mainStyles } from '../chat-styles'
 import ListContacts from '../list/list-contacts'
-import MessageInput from '../message/message-input'
-import MessageList from '../message/message-list';
 import MessageWrapper from '../message/message-wrapper';
 
 const MainChat = () => {

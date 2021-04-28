@@ -1,5 +1,4 @@
 const { PubSub } = require('graphql-subscriptions')
-const { User } = require('./models/user')
 const { Message } = require('./models/message')
 const { timeNow } = require('./utils/times-dates')
 

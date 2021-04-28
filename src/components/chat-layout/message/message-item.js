@@ -11,7 +11,8 @@ const MessageItem = (props) => {
         <div>
             <ListItem key="1">
                 <Grid container>
-                    <ListItemText align={props.align} secondary={props.userFrom}></ListItemText>
+                    <ListItemText disableTypography align={props.align} secondary={props.userFrom}
+                    style={{color: 'rgb(63, 81, 181)', fontWeight: '700'}}></ListItemText>
                     <Grid item xs={12} className={classes['message-item']}>
                         <ListItemText align={props.align} primary={props.text}></ListItemText>
                     </Grid>
