@@ -1,4 +1,4 @@
-import { Component, useEffect, useState } from "react";
+import { Component } from "react";
 import UserContext from "./Context";
 import getCookie from "./utils/cookie";
 import { isVerified } from './utils/auth'

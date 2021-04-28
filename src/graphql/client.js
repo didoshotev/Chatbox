@@ -3,7 +3,8 @@ import {
   } from 'apollo-boost';
   import { WebSocketLink } from 'apollo-link-ws'
   import { getMainDefinition } from 'apollo-utilities'
-import getCookie from '../utils/cookie';
+  import getCookie from '../utils/cookie';
+  import { setContext } from '@apollo/client/link/context'
 
   const httpUrl = 'http://localhost:9000/graphql';
   const wsUrl = 'ws://localhost:9000/graphql';
@@ -12,7 +13,6 @@ import getCookie from '../utils/cookie';
   const httpLink = ApolloLink.from([
     new ApolloLink((operation, forward) => {
       const token = getCookie('x-auth-token')
-      // const data = operation.getContext();
       if (token) {
         operation.setContext({headers: {'authorization': `Bearer ${token}`}});
       }
@@ -27,19 +27,37 @@ import getCookie from '../utils/cookie';
     options: {
     //   lazy: true,
       reconnect: true,
-      connectionParams: () => ({
-        accessToken: getCookie('x-auth-token')
-      })
+      connectionParams: () => {
+        return {
+          accessToken: getCookie('x-auth-token')
+        }
+      },
+      inactivityTimeout: 1000,
+      connectionCallback: (err) => {
+        if(err) {
+          console.log('Error Connecting to Subsciption Server', err);
+        }
+      }
     }
   })
-  
+
+  // Custom middleware for accessing chat subscription
+  const subscriptionMiddleware = {
+    applyMiddleware (options, next) {
+      options.auth = {accessToken: getCookie('x-auth-token')}
+      next()
+    }
+  }
+
+  wsLink.subscriptionClient.use([subscriptionMiddleware])
 
   const isSubsciption = (operation) => {
     const definition = getMainDefinition(operation.query)
+    // console.log(definition.operation);
     return definition.kind === 'OperationDefinition'
     && definition.operation === 'subscription'
   }
-  
+
   const client = new ApolloClient({
     cache: new InMemoryCache(),
     link: split(isSubsciption, wsLink, httpLink),

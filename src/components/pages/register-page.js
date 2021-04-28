@@ -38,7 +38,6 @@ export default function SignUp() {
       if(user) {
         context.logIn(user)
         history.push('/')
-        // TODO setContext, user is logged in
       } else {
         setCredentials({
           ...credentials,

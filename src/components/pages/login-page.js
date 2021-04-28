@@ -34,7 +34,6 @@ export default function SignIn() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log('handle Login');
     try {
       const { username, password } = credentials;
       const user = await login(username, password)
@@ -46,6 +45,7 @@ export default function SignIn() {
           ...credentials,
           error: true
         })
+        return
       }
     } catch (err) {
       console.log('Error while loging in');
